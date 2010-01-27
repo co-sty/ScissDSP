@@ -115,7 +115,7 @@ public class ConstQ
 		this.maxFFTSize	= maxFFTSize;
 	}
 	
-	public float getMaxFFTSize()
+	public int getMaxFFTSize()
 	{
 		return maxFFTSize;
 	}
