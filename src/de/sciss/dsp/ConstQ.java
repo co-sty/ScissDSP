@@ -135,6 +135,11 @@ public class ConstQ
 		return kernels[ kernel ].freq;
 	}
 	
+	public static int getNumKernels( int bandsPerOct, float maxFreq, float minFreq )
+	{
+		return (int) Math.ceil( bandsPerOct * MathUtil.log2( maxFreq / minFreq ));
+	}
+	
 	public void createKernels()
 	{
 		final float		threshSqr, q;
@@ -150,7 +155,7 @@ public class ConstQ
 		
 		maxFreq		= (float) Math.min( maxFreq, fs/2 );
 		q			= (float) (1 / (Math.pow( 2, 1.0/bandsPerOct ) - 1));
-		numKernels	= (int) Math.ceil( bandsPerOct * MathUtil.log2( maxFreq / minFreq ));
+		numKernels	= getNumKernels( bandsPerOct, maxFreq, minFreq );
 		kernels		= new Kernel[ numKernels ];
 //		cqKernels	= new float[ cqKernelNum ][];
 //		cqKernelOffs= new int[ cqKernelNum ];
