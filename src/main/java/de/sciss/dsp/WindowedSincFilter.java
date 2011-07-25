@@ -2,7 +2,7 @@
  *  WindowedSincFilter.java
  *  (ScissDSP)
  *
- *  Copyright (c) 2001-2010 Hanns Holger Rutz. All rights reserved.
+ *  Copyright (c) 2001-2011 Hanns Holger Rutz. All rights reserved.
  *
  *	This software is free software; you can redistribute it and/or
  *	modify it under the terms of the GNU General Public License
@@ -53,7 +53,7 @@ public class WindowedSincFilter
 // -------- private Variablen --------
 
 	private static final String[] windowNames = {
-		"Hamming", "Blackman", "Kaiser §=4", "Kaiser §=5", "Kaiser §=6", "Kaiser §=8", "Rectangle",
+		"Hamming", "Blackman", "Kaiser ÃŸ=4", "Kaiser ÃŸ=5", "Kaiser ÃŸ=6", "Kaiser ÃŸ=8", "Rectangle",
 		"von Hann", "Triangle"
 	};
 		
