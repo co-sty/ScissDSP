@@ -16,7 +16,7 @@ ScissDSP compiles with sbt 0.12.0 against Scala 2.9.2. It depends on [JTransform
 
 If you develop a Scala project using sbt and want it to depend on ScissDSP, you can now add the following line to your sbt build file:
 
-    libraryDependencies += "de.sciss" %% "scissdsp" % "1.0.+"
+    libraryDependencies += "de.sciss" %% "scissdsp" % "1.1.+"
 
 ### notes
 

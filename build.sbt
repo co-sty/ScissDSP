@@ -1,6 +1,6 @@
 name := "ScissDSP"
 
-version := "1.0.0"
+version := "1.1.0"
 
 organization := "de.sciss"
 
@@ -12,7 +12,7 @@ licenses := Seq( "LGPL v2+" -> url( "http://www.gnu.org/licenses/lgpl.txt" ))
 
 scalaVersion := "2.9.2"
 
-crossScalaVersions := Seq( "2.10.0-M7", "2.9.2" )
+// crossScalaVersions := Seq( "2.10.0-M7", "2.9.2" )
 
 libraryDependencies += "net.sourceforge.jtransforms" % "jtransforms" % "2.4.0"
 
