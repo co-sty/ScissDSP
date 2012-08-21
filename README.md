@@ -2,20 +2,22 @@
 
 ### statement
 
-ScissDSP is a collection of Digital Signal Processing (DSP) components for the Java language. Compiles against Java SE 1.5. It is (C)opyright 2001–2012 by Hanns Holger Rutz. All rights reserved.
+ScissDSP is a collection of Digital Signal Processing (DSP) components for the Scala programming language. It is (C)opyright 2001–2012 by Hanns Holger Rutz. All rights reserved.
 
-ScissDSP is released under the [GNU General Public License](http://github.com/Sciss/ScissDSP/blob/master/licenses/ScissDSP-License.txt) and comes with absolutely no warranties. To contact the author, send an email to `contact at sciss.de`.
+ScissDSP is released under the [GNU Lesser General Public License](http://github.com/Sciss/ScissDSP/blob/master/licenses/ScissDSP-License.txt) and comes with absolutely no warranties. To contact the author, send an email to `contact at sciss.de`.
 
 For project status, API and current version, visit [github.com/Sciss/ScissDSP](http://github.com/Sciss/ScissDSP).
 
 ### building
 
-ScissDSP will eventually be translated into Scala. As an anticipating step, it now builds with the Simple Build Tool (sbt 0.11). Simply run `sbt package` to compile and package into a `.jar` file.
-
-You can still check out the older 0.10 version which builds with ant.
+ScissDSP compiles with sbt 0.12.0 against Scala 2.9.2. It depends on [JTransforms](https://sites.google.com/site/piotrwendykier/software/jtransforms) for the FFT now, implying Java 1.6 SE. JTransforms is also licensed under the GNU LGPL.
 
 ### linking
 
 If you develop a Scala project using sbt and want it to depend on ScissDSP, you can now add the following line to your sbt build file:
 
-    libraryDependencies += "de.sciss" % "scissdsp" % "0.11" from "https://github.com/downloads/Sciss/ScissDSP/scissdsp-0.11.jar"
+    libraryDependencies += "de.sciss" %% "scissdsp" % "1.0.+"
+
+### notes
+
+As of v1.0.0, the FFT algorithm has changed. It seems that in the previous version the phases of the real transform were inverted. The new algorithm seems consistent with other FFT algorithms tested. The floating point rounding noise of the new algorithm has not changed (in fact is a tiny bit smaller).

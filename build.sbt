@@ -1,13 +1,13 @@
 name := "ScissDSP"
 
-version := "0.11"
+version := "1.0.0-SNAPSHOT"
 
 organization := "de.sciss"
 
-scalaVersion := "2.9.1"
+scalaVersion := "2.9.2"
 
-crossPaths := false  // this is just a Java project right now!
+libraryDependencies += "net.sourceforge.jtransforms" % "jtransforms" % "2.4.0"
 
 retrieveManaged := true
 
-// scalacOptions ++= Seq( "-deprecation", "-unchecked" )
+scalacOptions ++= Seq( "-deprecation", "-unchecked" )
