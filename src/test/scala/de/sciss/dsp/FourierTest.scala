@@ -41,7 +41,7 @@
 //      val rnd  = new util.Random( 0L )
 //      val n    = 64
 //
-//      val data1   = Array.fill( n + 2 )( rnd.nextFloat() )
+//      val data1   = Array.fill( n + 2 )( rnd.nextFloat() * 2 - 1 )
 //      data1( n )  = 0f
 //      data1( n + 1 ) = 0f
 //      val data2   = data1.clone()

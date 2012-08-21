@@ -5,7 +5,7 @@ import annotation.switch
 
 object Window {
    import math.Pi
-   import MathUtil.Pi2
+   import Util.Pi2
 
    def apply( id: Int, param: Double = 0.0 ) : Window = (id: @switch) match {
       case 0 => Hamming

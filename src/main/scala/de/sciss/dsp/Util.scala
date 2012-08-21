@@ -1,5 +1,5 @@
 /*
- * MathUtil.scala
+ * Util.scala
  * (ScissDSP)
  *
  * Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
@@ -29,7 +29,7 @@ package de.sciss.dsp
  *  This is a helper object containing utility functions
  *  for common math operations and constants
  */
-object MathUtil {
+object Util {
 	/**
 	 *  2 * PI (Outline of the unit circle)
 	 */
@@ -98,4 +98,6 @@ object MathUtil {
 
   		energy
   	}
+
+//   def printPrint( a: Array[ Float ], off: Int, length: Int, columns: Int = 8 ) : String =
 }

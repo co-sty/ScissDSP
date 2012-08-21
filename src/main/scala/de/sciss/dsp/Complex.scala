@@ -27,7 +27,7 @@ package de.sciss.dsp
 
 object Complex {
    import math.Pi
-   import MathUtil.Pi2
+   import Util.Pi2
 //   private val Pi  = math.Pi
 //   private val Pi2 = math.Pi * 2
 

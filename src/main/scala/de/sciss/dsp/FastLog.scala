@@ -51,7 +51,7 @@ object FastLog {
       def q: Int = q0
 
       private val qM1      = q0 - 1
-      private val korr	   = (MathUtil.Ln2 / math.log( base0 )).toFloat
+      private val korr	   = (Util.Ln2 / math.log( base0 )).toFloat
 
       private val data     = {
          val tabSize    = 1 << (24 - q0)
@@ -59,7 +59,7 @@ object FastLog {
          var i = 0; while( i < tabSize ) {
             // note: the -150 is to avoid this addition in the calculation
             // of the exponent (see the floatToRawIntBits doc).
-            arr( i ) = (MathUtil.log2( i << q0 ) - 150).toFloat
+            arr( i ) = (Util.log2( i << q0 ) - 150).toFloat
          i += 1 }
          arr
       }

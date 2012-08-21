@@ -27,12 +27,42 @@ package de.sciss.dsp
 
 object ConstQ {
    sealed trait ConfigLike {
+      /**
+       * Sampling rate of the audio material, in Hertz.
+       */
       def sampleRate: Double
+
+      /**
+       * Lowest frequency in the logarithmic spectral, in Hertz.
+       */
       def minFreq: Float
+
+      /**
+       * Highest frequency in the logarithmic spectral, in Hertz.
+       */
       def maxFreq: Float
+
+      /**
+       * Maximum temporal resolution in milliseconds. This resolution is achieved for high frequencies.
+       */
       def maxTimeRes: Float
+
+      /**
+       * Maximum size of FFTs calculated. This constraints the actual bandwidth of the minimum frequency
+       * spectral resolution. Even if the bands per octave and minimum frequency would suggest a higher
+       * FFT size for low frequencies, this setting prevents these, and therefore constraints processing
+       * time.
+       */
       def maxFFTSize: Int
+
+      /**
+       * Number of frequency bands resolved per octave.
+       */
       def bandsPerOct: Int
+
+      /**
+       * Policy regarding parallelization of the calculation.
+       */
       def threading: Threading
    }
    object Config {
@@ -98,7 +128,7 @@ object ConstQ {
     * Calculates the number of kernels resulting from a given setting
     */
    def getNumKernels( bandsPerOct: Int, maxFreq: Float, minFreq: Float ) : Int =
-      math.ceil( bandsPerOct * MathUtil.log2( maxFreq / minFreq )).toInt
+      math.ceil( bandsPerOct * Util.log2( maxFreq / minFreq )).toInt
 
    def apply( config: Config = Config().build ) : ConstQ = createInstance( config )
 
@@ -113,9 +143,11 @@ object ConstQ {
       val numKernels = kernels.length
       val fftSize    = fft.size
 
+      override def toString = "ConstQ@" + hashCode.toHexString
+
       def getFrequency( kernel: Int ) : Float = kernels( kernel ).freq
 
-      def transform( input: Array[ Float ], inOff: Int, inLen: Int, out0: Array[ Float ], outOff: Int ) : Array[ Float ] = {
+      def transform( input: Array[ Float ], inLen: Int, out0: Array[ Float ], inOff: Int, outOff: Int ) : Array[ Float ] = {
          val output = if( out0 == null ) new Array[ Float ]( numKernels ) else out0
 
    //		gain *= TENBYLOG10;
@@ -199,9 +231,9 @@ object ConstQ {
 //		cqKernelOffs= new int[ cqKernelNum ];
 		val maxKernLen	= q * config.sampleRate / config.minFreq
 
-//		System.out.println( "ceil " + ((int) Math.ceil( maxKernLen )) + "; nextPower " + (MathUtil.nextPowerOfTwo( (int) Math.ceil( maxKernLen )))) ;
+//		System.out.println( "ceil " + ((int) Math.ceil( maxKernLen )) + "; nextPower " + (Util$.nextPowerOfTwo( (int) Math.ceil( maxKernLen )))) ;
 
-		val fftSize		= math.min( config.maxFFTSize, MathUtil.nextPowerOfTwo( math.ceil( maxKernLen ).toInt ))
+		val fftSize		= math.min( config.maxFFTSize, Util.nextPowerOfTwo( math.ceil( maxKernLen ).toInt ))
 //		LNKORR_ADD	= -2 * Math.log( fftSize );
 		val fftSizeC	= fftSize << 1
 		val fftBuf		= new Array[ Float ]( fftSizeC )
@@ -228,7 +260,7 @@ object ConstQ {
          val win			   = Window.Hamming.create( kernelLen )
 
          val centerFreq	   = config.minFreq * math.pow( 2, k.toDouble / config.bandsPerOct )
-         val centerFreqN	= centerFreq * -MathUtil.Pi2 / fs
+         val centerFreqN	= centerFreq * -Util.Pi2 / fs
 
 //			weight		= 1.0f / (kernelLen * fftSize);
 			// this is a good approximation in the kernel len truncation case
@@ -248,12 +280,13 @@ object ConstQ {
 			// h*(-x) <-> H*(f). time reversal is accomplished by
 			// having iteration variable j run....
 
-			// XXX NO! we don't take the reversed conjugate since
-			// there seems to be a bug with Fourier.complexTransform
-			// that already computes the conjugate spectrum (why??)
+         // note: in the old FFT algorithm, there was a mistake, whereby complex input
+         // data was already time reversed in the transform. this is corrected now.
+
 //			for( int i = kernelLen - 1, j = fftSizeC - kernelLenE; i >= 0; i-- ) { ... }
 //			for( int i = 0, j = 0; /* fftSizeC - kernelLenE; */ i < kernelLen; i++ ) { ... }
-			var i = 0; var j = fftSizeC - kernelLenE; while( i < kernelLen ) {
+//         var i = 0; var j = fftSizeC - kernelLenE; while( i < kernelLen ) {
+			var i = kernelLen - 1; var j = fftSizeC - kernelLenE; while( i >= 0 ) {
 				// complex exponential of a purely imaginary number
 				// is cos( imag( n )) + i sin( imag( n ))
 				val d1   = centerFreqN * i
@@ -265,7 +298,8 @@ object ConstQ {
 //				fftBuf[ j++ ] = -f1 * sin;  // conj!
 				fftBuf( j ) = (d2 * sin).toFloat; j += 1  // NORM!
 				if( j == fftSizeC ) j = 0
-			i += 1 }
+//            i += 1 }
+			i -= 1 }
 
 			// XXX to be honest, i don't get the point
 			// of calculating the fft here, since we
@@ -276,21 +310,28 @@ object ConstQ {
 			// isn't it?)
 
 //			Fourier.complexTransform( fftBuf, fftSize, Fourier.FORWARD )
+
+//println( fftBuf.mkString( "[ ", ", ", " ]" ))
          fft.complexForward( fftBuf )
+//val _out  = fftBuf.clone()
+//Complex.rect2Polar( _out, 0, _out, 0, _out.length )
+//val _test = _out.zipWithIndex.collect { case (f, i) if i % 2 == 0 => f }
+//println( _test.mkString( "[ ", ", ", " ]" ))
 
 			// with a "high" threshold like 0.0054, the
-			// point it _not_ to create a sparse matrix by
+			// point is _not_ to create a sparse matrix by
 			// gating the values. in fact we can locate
-			// the kernal spectrally, so all we need to do
+			// the kernel spectrally, so all we need to do
 			// is to find the lower and upper frequency
 			// of the transformed kernel! that makes things
 			// a lot easier anyway since we don't need
 			// to employ a special sparse matrix library.
          val specStart = {
             var i = 0; var break = false; while( !break && i <= fftSize ) {
-               val f1 = fftBuf( i )
-               val f2 = fftBuf( i+1 )
-               if( (f1 * f1 + f2 * f2) > threshSqr ) break = true else i += 2
+               val f1      = fftBuf( i )
+               val f2      = fftBuf( i+1 )
+               val magSqr  = f1 * f1 + f2 * f2
+               if( magSqr > threshSqr ) break = true else i += 2
             }
             i
          }
@@ -310,9 +351,10 @@ object ConstQ {
 
 			val specStop = {
             var i = specStart; var break = false; while( !break && i <= fftSize ) {
-               val f1 = fftBuf( i )
-               val f2 = fftBuf( i+1 )
-               if( (f1 * f1 + f2 * f2) <= threshSqr ) break = true else i += 2
+               val f1      = fftBuf( i )
+               val f2      = fftBuf( i+1 )
+               val magSqr  = f1 * f1 + f2 * f2
+               if( magSqr <= threshSqr ) break = true else i += 2
             }
             i
 			}
@@ -329,12 +371,40 @@ object ConstQ {
 }
 trait ConstQ {
    def config: ConstQ.Config
+
+   /**
+    * The number of kernels is the total number of frequency bands calculated
+    */
    def numKernels: Int
+
+   /**
+    * The actual maximum FFT size used.
+    */
    def fftSize: Int
+
+   /**
+    * The buffer used to perform FFTs.
+    */
    def fftBuffer: Array[ Float ]
+
+   /**
+    * Queries a kernel frequency in Hertz.
+    *
+    * @param   kernel   the kernel index, from `0` up to and including `numKernels-1`
+    */
    def getFrequency( kernel: Int ) : Float
 
-   def transform( input: Array[ Float ], inOff: Int, inLen: Int, output: Array[ Float ], outOff: Int ) : Array[ Float ]
+   /**
+    * Transforms a time domain input signal to obtain the constant Q spectral coefficients.
+    *
+    * @param input   the time domain signal, which will be read from `inOff` for `inLen` samples
+    * @param inOff   the offset into the input array
+    * @param inLen   the number of samples to take from the input array
+    * @param output  the target kernel buffer (size should be at leat `outOff` + `numKernels`. if `null` a new buffer is allocated
+    * @param outOff  the offset into the output buffer
+    * @return  the output buffer which is useful when the argument was `null`
+    */
+   def transform( input: Array[ Float ], inLen: Int, output: Array[ Float ], inOff: Int = 0, outOff: Int = 0 ) : Array[ Float ]
 
    /**
   	 * 	Assumes that the input was already successfully transformed
@@ -342,6 +412,10 @@ trait ConstQ {
   	 * 	getFFTBuffer()). From this FFT, the method calculates the
   	 * 	convolutions with the filter kernels, returning the magnitudes
   	 * 	of the filter outputs.
-  	 */
-  	def convolve( output: Array[ Float ], outOff: Int ) : Array[ Float ]
+    *
+    * @param output  the target kernel buffer (size should be at leat `outOff` + `numKernels`. if `null` a new buffer is allocated
+    * @param outOff  the offset into the output buffer
+    * @return  the output buffer which is useful when the argument was `null`
+    */
+  	def convolve( output: Array[ Float ], outOff: Int = 0 ) : Array[ Float ]
 }
