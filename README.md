@@ -10,7 +10,7 @@ For project status, API and current version, visit [github.com/Sciss/ScissDSP](h
 
 ### building
 
-ScissDSP compiles with sbt 0.12.0 against Scala 2.9.2. It depends on [JTransforms](https://sites.google.com/site/piotrwendykier/software/jtransforms) for the FFT now, implying Java 1.6 SE. JTransforms is also licensed under the GNU LGPL.
+ScissDSP compiles with sbt 0.12.0 against Scala 2.10 (default) and 2.9.2. It depends on [JTransforms](https://sites.google.com/site/piotrwendykier/software/jtransforms) for the FFT now, implying Java 1.6 SE. JTransforms is also licensed under the GNU LGPL.
 
 ### linking
 
