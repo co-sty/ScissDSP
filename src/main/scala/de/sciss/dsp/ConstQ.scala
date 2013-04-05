@@ -2,7 +2,7 @@
  * ConstQ.scala
  * (ScissDSP)
  *
- * Copyright (c) 2001-2012 Hanns Holger Rutz. All rights reserved.
+ * Copyright (c) 2001-2013 Hanns Holger Rutz. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -25,85 +25,117 @@
 
 package de.sciss.dsp
 
+import de.sciss.serial.{DataOutput, DataInput, ImmutableSerializer}
+import language.implicitConversions
+
 object ConstQ {
-   sealed trait ConfigLike {
-      /**
-       * Sampling rate of the audio material, in Hertz.
-       */
-      def sampleRate: Double
 
-      /**
-       * Lowest frequency in the logarithmic spectral, in Hertz.
-       */
-      def minFreq: Float
+  sealed trait ConfigLike {
+    /**
+     * Sampling rate of the audio material, in Hertz.
+     */
+    def sampleRate: Double
 
-      /**
-       * Highest frequency in the logarithmic spectral, in Hertz.
-       */
-      def maxFreq: Float
+    /**
+     * Lowest frequency in the logarithmic spectral, in Hertz.
+     */
+    def minFreq: Float
 
-      /**
-       * Maximum temporal resolution in milliseconds. This resolution is achieved for high frequencies.
-       */
-      def maxTimeRes: Float
+    /**
+     * Highest frequency in the logarithmic spectral, in Hertz.
+     */
+    def maxFreq: Float
 
-      /**
-       * Maximum size of FFTs calculated. This constraints the actual bandwidth of the minimum frequency
-       * spectral resolution. Even if the bands per octave and minimum frequency would suggest a higher
-       * FFT size for low frequencies, this setting prevents these, and therefore constraints processing
-       * time.
-       */
-      def maxFFTSize: Int
+    /**
+     * Maximum temporal resolution in milliseconds. This resolution is achieved for high frequencies.
+     */
+    def maxTimeRes: Float
 
-      /**
-       * Number of frequency bands resolved per octave.
-       */
-      def bandsPerOct: Int
+    /**
+     * Maximum size of FFTs calculated. This constraints the actual bandwidth of the minimum frequency
+     * spectral resolution. Even if the bands per octave and minimum frequency would suggest a higher
+     * FFT size for low frequencies, this setting prevents these, and therefore constraints processing
+     * time.
+     */
+    def maxFFTSize: Int
 
-      /**
-       * Policy regarding parallelization of the calculation.
-       */
-      def threading: Threading
-   }
-   object Config {
-      implicit def build( b: ConfigBuilder ) : Config = b.build
-      def apply() : ConfigBuilder = new ConfigBuilderImpl
-   }
-   sealed trait Config extends ConfigLike
-   object ConfigBuilder {
-      def apply( config: Config ) : ConfigBuilder = {
-         import config._
-         val b = new ConfigBuilderImpl
-         b.sampleRate   = sampleRate
-         b.minFreq      = minFreq
-         b.maxFreq      = maxFreq
-         b.maxTimeRes   = maxTimeRes
-         b.maxFFTSize   = maxFFTSize
-         b.bandsPerOct  = bandsPerOct
-         b.threading    = threading
-         b
+    /**
+     * Number of frequency bands resolved per octave.
+     */
+    def bandsPerOct: Int
+
+    /**
+     * Policy regarding parallelization of the calculation.
+     */
+    def threading: Threading
+  }
+
+  object Config {
+    implicit def build(b: ConfigBuilder): Config = b.build
+
+    def apply(): ConfigBuilder = new ConfigBuilderImpl
+
+    private final val COOKIE  = 0x4351
+
+    implicit object Serializer extends ImmutableSerializer[Config] {
+      def write(v: Config, out: DataOutput) {
+        import v._
+        out.writeShort(COOKIE)
+        out.writeDouble(sampleRate)
+        out.writeFloat(minFreq)
+        out.writeFloat(maxFreq)
+        out.writeFloat(maxTimeRes)
+        out.writeShort(maxFFTSize)
+        out.writeShort(bandsPerOct)
+        Threading.Serializer.write(threading, out)
       }
-   }
-   sealed trait ConfigBuilder extends ConfigLike {
-      def sampleRate: Double
-      def sampleRate_=( value: Double ) : Unit
-      def minFreq: Float
-      def minFreq_=( value: Float ) : Unit
-      def maxFreq: Float
-      def maxFreq_=( value: Float ) : Unit
-      def maxTimeRes: Float
-      def maxTimeRes_=( value: Float ) : Unit
-      def maxFFTSize: Int
-      def maxFFTSize_=( value: Int ) : Unit
-      def bandsPerOct: Int
-      def bandsPerOct_=( value: Int ) : Unit
-      def threading: Threading
-      def threading_=( value: Threading ) : Unit
 
-      def build : Config
-   }
+      def read(in: DataInput): Config = {
+        val cookie = in.readShort()
+        require(cookie == COOKIE, s"Unexpected cookie $cookie")
+        val sampleRate  = in.readDouble()
+        val minFreq     = in.readFloat()
+        val maxFreq     = in.readFloat()
+        val maxTimeRes  = in.readFloat()
+        val maxFFTSize  = in.readShort()
+        val bandsPerOct = in.readShort()
+        val threading   = Threading.Serializer.read(in)
+        new ConfigImpl(sampleRate = sampleRate, minFreq = minFreq, maxFreq = maxFreq, maxTimeRes = maxTimeRes,
+                       maxFFTSize = maxFFTSize, bandsPerOct = bandsPerOct, threading = threading)
+      }
+    }
+  }
 
-   private final class ConfigBuilderImpl extends ConfigBuilder {
+  sealed trait Config extends ConfigLike
+
+  object ConfigBuilder {
+    def apply(config: Config): ConfigBuilder = {
+      import config._
+      val b = new ConfigBuilderImpl
+      b.sampleRate  = sampleRate
+      b.minFreq     = minFreq
+      b.maxFreq     = maxFreq
+      b.maxTimeRes  = maxTimeRes
+      b.maxFFTSize  = maxFFTSize
+      b.bandsPerOct = bandsPerOct
+      b.threading   = threading
+      b
+    }
+  }
+
+  sealed trait ConfigBuilder extends ConfigLike {
+    var sampleRate: Double
+    var minFreq: Float
+    var maxFreq: Float
+    var maxTimeRes: Float
+    var maxFFTSize: Int
+    var bandsPerOct: Int
+    var threading: Threading
+
+    def build: Config
+  }
+
+  private final class ConfigBuilderImpl extends ConfigBuilder {
       override def toString = "ConstQ.ConfigBuilder@" + hashCode.toHexString
 
    	// rather moderate defaults with 55 Hz, 8ms spacing, 4096 FFT...
