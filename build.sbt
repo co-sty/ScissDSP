@@ -1,23 +1,23 @@
-name := "ScissDSP"
+name         := "ScissDSP"
 
-version := "1.2.0"
+version      := "1.2.1-SNAPSHOT"
 
 organization := "de.sciss"
 
-description := "Collection of DSP algorithms and components for Scala"
+description  := "Collection of DSP algorithms and components for Scala"
 
-homepage <<= name { n => Some(url("https://github.com/Sciss/" + n)) }
+homepage     := Some(url("https://github.com/Sciss/" + name.value))
 
-licenses := Seq("LGPL v2+" -> url("http://www.gnu.org/licenses/lgpl.txt"))
+licenses     := Seq("LGPL v2+" -> url("http://www.gnu.org/licenses/lgpl.txt"))
 
-scalaVersion := "2.10.1"
+scalaVersion := "2.11.0-RC3"
 
-// crossScalaVersions := Seq("2.10.0", "2.9.2")
+crossScalaVersions := Seq("2.11.0-RC3", "2.10.4")
 
 libraryDependencies ++= Seq(
-  "net.sourceforge.jtransforms" % "jtransforms" % "2.4.0",
-  "de.sciss" %% "serial" % "1.0.+",
-  "org.scalatest" %% "scalatest" % "1.9.1" % "test"
+  "net.sourceforge.jtransforms" %  "jtransforms" % "2.4.0",
+  "de.sciss"                    %% "serial"      % "1.0.+",
+  "org.scalatest"               %% "scalatest"   % "2.1.2" % "test"
 )
 
 retrieveManaged := true
@@ -45,19 +45,18 @@ buildInfoPackage := "de.sciss.dsp"
 
 publishMavenStyle := true
 
-publishTo <<= version { v =>
-  Some(if (v endsWith "-SNAPSHOT")
+publishTo :=
+  Some(if (version.value endsWith "-SNAPSHOT")
     "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
   else
     "Sonatype Releases"  at "https://oss.sonatype.org/service/local/staging/deploy/maven2"
   )
-}
 
 publishArtifact in Test := false
 
 pomIncludeRepository := { _ => false }
 
-pomExtra <<= name { n =>
+pomExtra := { val n = name.value
 <scm>
   <url>git@github.com:Sciss/{n}.git</url>
   <connection>scm:git:git@github.com:Sciss/{n}.git</connection>
@@ -75,8 +74,8 @@ pomExtra <<= name { n =>
 
 seq(lsSettings :_*)
 
-(LsKeys.tags in LsKeys.lsync) := Seq("audio", "spectrum", "dsp", "signal")
+(LsKeys.tags   in LsKeys.lsync) := Seq("audio", "spectrum", "dsp", "signal")
 
 (LsKeys.ghUser in LsKeys.lsync) := Some("Sciss")
 
-(LsKeys.ghRepo in LsKeys.lsync) <<= name(Some(_))
+(LsKeys.ghRepo in LsKeys.lsync) := Some(name.value)
