@@ -1,10 +1,9 @@
 package de.sciss.dsp
 
 import de.sciss.serial.{DataInput, DataOutput}
-import org.scalatest.matchers.ShouldMatchers
-import org.scalatest.FlatSpec
+import org.scalatest.{Matchers, FlatSpec}
 
-class SerializationSpec extends FlatSpec with ShouldMatchers {
+class SerializationSpec extends FlatSpec with Matchers {
   "ConstQ.Config" should "serialize forth and back" in {
     val cfg     = ConstQ.Config()
     cfg.sampleRate  = 96000.0

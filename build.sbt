@@ -1,28 +1,28 @@
-name         := "ScissDSP"
+name               := "ScissDSP"
 
-version      := "1.2.1-SNAPSHOT"
+version            := "1.2.1"
 
-organization := "de.sciss"
+organization       := "de.sciss"
 
-description  := "Collection of DSP algorithms and components for Scala"
+description        := "Collection of DSP algorithms and components for Scala"
 
-homepage     := Some(url("https://github.com/Sciss/" + name.value))
+homepage           := Some(url("https://github.com/Sciss/" + name.value))
 
-licenses     := Seq("LGPL v2+" -> url("http://www.gnu.org/licenses/lgpl.txt"))
+licenses           := Seq("LGPL v2.1+" -> url("http://www.gnu.org/licenses/lgpl-2.1.txt"))
 
-scalaVersion := "2.11.0-RC3"
+scalaVersion       := "2.11.0"
 
-crossScalaVersions := Seq("2.11.0-RC3", "2.10.4")
+crossScalaVersions := Seq("2.11.0", "2.10.4")
 
 libraryDependencies ++= Seq(
   "net.sourceforge.jtransforms" %  "jtransforms" % "2.4.0",
-  "de.sciss"                    %% "serial"      % "1.0.+",
-  "org.scalatest"               %% "scalatest"   % "2.1.2" % "test"
+  "de.sciss"                    %% "serial"      % "1.0.2",
+  "org.scalatest"               %% "scalatest"   % "2.1.3" % "test"
 )
 
-retrieveManaged := true
+// retrieveManaged := true
 
-scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature")
+scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature", "-Xfuture")
 
 initialCommands in console := """
   |import de.sciss.dsp._
