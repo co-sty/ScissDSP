@@ -1,3 +1,16 @@
+/*
+ * MFCC.scala
+ * (ScissDSP)
+ *
+ * Copyright (c) 2001-2015 Hanns Holger Rutz. All rights reserved.
+ *
+ * This software is published under the GNU Lesser General Public License v2.1+
+ *
+ *
+ * For further information, please contact Hanns Holger Rutz at
+ * contact@sciss.de
+ */
+
 package de.sciss.dsp
 
 import de.sciss.serial.{ImmutableSerializer, DataOutput, DataInput}
@@ -82,7 +95,7 @@ object MFCC {
       import config._
       val b = new ConfigBuilderImpl
       b.sampleRate      = sampleRate
-      b.numCoeff = numCoeff
+      b.numCoeff        = numCoeff
       b.minFreq         = minFreq
       b.maxFreq         = maxFreq
       b.numFilters      = numFilters
@@ -95,7 +108,7 @@ object MFCC {
 
   sealed trait ConfigBuilder extends ConfigLike {
     var sampleRate      : Double
-    var numCoeff : Int
+    var numCoeff        : Int
     var minFreq         : Float
     var maxFreq         : Float
     var numFilters      : Int

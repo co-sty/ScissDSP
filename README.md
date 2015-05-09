@@ -2,7 +2,7 @@
 
 ## statement
 
-ScissDSP is a collection of Digital Signal Processing (DSP) components for the Scala programming language. It is (C)opyright 2001&ndash;2014 by Hanns Holger Rutz. All rights reserved.
+ScissDSP is a collection of Digital Signal Processing (DSP) components for the Scala programming language. It is (C)opyright 2001&ndash;2015 by Hanns Holger Rutz. All rights reserved.
 
 ScissDSP is released under the [GNU Lesser General Public License](http://github.com/Sciss/ScissDSP/blob/master/licenses/ScissDSP-License.txt) and comes with absolutely no warranties. To contact the author, send an email to `contact at sciss.de`.
 
