@@ -4,8 +4,7 @@ import de.sciss.serial.{ImmutableSerializer, DataOutput, DataInput}
 
 import scala.language.implicitConversions
 
-/**
-  * Mel-Frequency Cepstrum Coefficients.
+/** Mel-Frequency Cepstrum Coefficients.
   *
   * @author Ganesh Tiwari
   * @author Hanns Holger Rutz
@@ -18,10 +17,10 @@ object MFCC {
     /** Number of cepstral coefficients to calculate. */
     def numCoefficients: Int
 
-    /** Lowest frequency in the logarithmic spectral, in Hertz. */
+    /** Lowest frequency in the Mel filter bank, in Hertz. */
     def minFreq: Float
 
-    /** Highest frequency in the logarithmic spectral, in Hertz. */
+    /** Highest frequency in the Mel filter bank, in Hertz. */
     def maxFreq: Float
 
     /** Number of filters in the Mel filter bank. */
@@ -29,7 +28,7 @@ object MFCC {
 
     def fftSize: Int
 
-    /** If `true`, uses a high-frequency boost. */
+    /** If `true`, uses a fixed high-frequency boosting filter. */
     def preEmphasis: Boolean
 
     /** Policy regarding parallelization of the calculation. */
