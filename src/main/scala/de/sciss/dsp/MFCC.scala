@@ -15,7 +15,7 @@ object MFCC {
     def sampleRate: Double
 
     /** Number of cepstral coefficients to calculate. */
-    def numCoefficients: Int
+    def numCoeff: Int
 
     /** Lowest frequency in the Mel filter bank, in Hertz. */
     def minFreq: Float
@@ -47,7 +47,7 @@ object MFCC {
         import v._
         out.writeShort(COOKIE)
         out.writeDouble(sampleRate)
-        out.writeShort(numCoefficients)
+        out.writeShort(numCoeff)
         out.writeFloat(minFreq)
         out.writeFloat(maxFreq)
         out.writeShort(numFilters)
@@ -60,7 +60,7 @@ object MFCC {
         val cookie = in.readShort()
         require(cookie == COOKIE, s"Unexpected cookie $cookie")
         val sampleRate      = in.readDouble()
-        val numCoefficients = in.readShort()
+        val numCoeff        = in.readShort()
         val minFreq         = in.readFloat()
         val maxFreq         = in.readFloat()
         val numFilters      = in.readShort()
@@ -68,7 +68,7 @@ object MFCC {
         val preEmphasis     = in.readBoolean()
         val threading       = Threading.Serializer.read(in)
 
-        new ConfigImpl(sampleRate = sampleRate, numCoefficients = numCoefficients,
+        new ConfigImpl(sampleRate = sampleRate, numCoeff = numCoeff,
           minFreq = minFreq, maxFreq = maxFreq, numFilters = numFilters,
           fftSize = fftSize, preEmphasis = preEmphasis, threading = threading)
       }
@@ -82,7 +82,7 @@ object MFCC {
       import config._
       val b = new ConfigBuilderImpl
       b.sampleRate      = sampleRate
-      b.numCoefficients = numCoefficients
+      b.numCoeff = numCoeff
       b.minFreq         = minFreq
       b.maxFreq         = maxFreq
       b.numFilters      = numFilters
@@ -95,7 +95,7 @@ object MFCC {
 
   sealed trait ConfigBuilder extends ConfigLike {
     var sampleRate      : Double
-    var numCoefficients : Int
+    var numCoeff : Int
     var minFreq         : Float
     var maxFreq         : Float
     var numFilters      : Int
@@ -111,7 +111,7 @@ object MFCC {
 
     // rather moderate defaults with 55 Hz, 8ms spacing, 4096 FFT...
     var sampleRate      = 44100.0
-    var numCoefficients = 13
+    var numCoeff = 13
     var minFreq         = 55f
     var maxFreq         = 20000f
     var numFilters      = 42  // Tiwari used 30 for speech, we use SuperCollider's 42 default
@@ -119,12 +119,12 @@ object MFCC {
     var preEmphasis     = false
     var threading       = Threading.Multi: Threading
 
-    def build: Config = ConfigImpl(sampleRate, numCoefficients = numCoefficients,
+    def build: Config = ConfigImpl(sampleRate, numCoeff = numCoeff,
       minFreq = minFreq, maxFreq = maxFreq, numFilters = numFilters,
       fftSize = fftSize, preEmphasis = preEmphasis, threading = threading)
   }
 
-  private final case class ConfigImpl(sampleRate: Double, numCoefficients: Int, minFreq: Float, maxFreq: Float,
+  private final case class ConfigImpl(sampleRate: Double, numCoeff: Int, minFreq: Float, maxFreq: Float,
                                       numFilters: Int, fftSize: Int, preEmphasis: Boolean, threading: Threading)
     extends Config {
 
@@ -159,7 +159,7 @@ object MFCC {
     /** Calculates the MFCC for the given input frame.
       *
       * @param in the input samples to process
-      * @return the feature vector with `config.numCoefficients` elements.
+      * @return the feature vector with `config.numCoeff` elements.
       */
     def process(in: Array[Float]): Array[Double] = {
       val frame = if (preEmphasis) applyPreEmphasis(in) else in
@@ -172,10 +172,10 @@ object MFCC {
     }
 
     private def dct(y: Array[Double]): Array[Double] = {
-      val c = new Array[Double](numCoefficients)
+      val c = new Array[Double](numCoeff)
       var n = 1
       val r = math.Pi / numFilters
-      while (n <= numCoefficients) {
+      while (n <= numCoeff) {
         var i = 1
         val s = r * (n - 1)
         while (i <= numFilters) {
