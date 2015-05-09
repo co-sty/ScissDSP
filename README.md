@@ -18,10 +18,10 @@ The following artifact is necessary as dependency:
 
     libraryDependencies += "de.sciss" %% "scissdsp" % v
 
-The current version `v` is `"1.2.1+"`
+The current version `v` is `"1.2.1"`
 
 ## notes
 
-As of v1.0.0, the FFT algorithm has changed. It seems that in the previous version the phases of the real transform were inverted. The new algorithm seems consistent with other FFT algorithms tested. The floating point rounding noise of the new algorithm has not changed (in fact is a tiny bit smaller).
-
-For an example of the Constant-Q transform, see the [SonogramOverview project](http://github.com/Sciss/SonogramOverview).
+- As of v1.0.0, the FFT algorithm has changed. It seems that in the previous version the phases of the real transform were inverted. The new algorithm seems consistent with other FFT algorithms tested. The floating point rounding noise of the new algorithm has not changed (in fact is a tiny bit smaller).
+- For an example of the Constant-Q transform, see the [SonogramOverview project](http://github.com/Sciss/SonogramOverview).
+- the MFCC implementation is based on code by [Ganesh Tiwari](https://code.google.com/p/speech-recognition-java-hidden-markov-model-vq-mfcc/), released 2012 under teh Apache License 2.0. 

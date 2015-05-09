@@ -85,7 +85,7 @@ trait Fourier {
 
   /** One-dimensional discrete complex fourier transform.
     * Replaces `a[ 0...2*len ]` by its discrete Fourier transform.
-    * In the inverse operation, a gain normalisierung by 1/len is
+    * In the inverse operation, a gain normalization by 1/len is
     * applied automatically.
     *
     * @param   a     complex array with real part in a[ 0, 2, 4, ... 2*len - 2 ],
@@ -101,7 +101,7 @@ trait Fourier {
     * Replaces `a[ 0...len ]` by its discrete Fourier transform
     * (positive freq. half of the complex spectrum).
     *
-    * __Warning__: a actually has len + 2 elements! in forward operation these
+    * __Warning__: `a` actually has `len + 2` elements! in forward operation these
     * last two elements must be zero.
     *
     * @param   a     real array; output is complex with real part in a[ 0, 2, 4, ... len ],

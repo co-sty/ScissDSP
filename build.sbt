@@ -1,6 +1,6 @@
 name               := "ScissDSP"
 
-version            := "1.2.1"
+version            := "1.2.2-SNAPSHOT"
 
 organization       := "de.sciss"
 
@@ -10,19 +10,18 @@ homepage           := Some(url("https://github.com/Sciss/" + name.value))
 
 licenses           := Seq("LGPL v2.1+" -> url("http://www.gnu.org/licenses/lgpl-2.1.txt"))
 
-scalaVersion       := "2.11.0"
+scalaVersion       := "2.11.6"
 
-crossScalaVersions := Seq("2.11.0", "2.10.4")
+crossScalaVersions := Seq("2.11.6", "2.10.5")
 
 libraryDependencies ++= Seq(
-  "net.sourceforge.jtransforms" %  "jtransforms" % "2.4.0",
-  "de.sciss"                    %% "serial"      % "1.0.2",
-  "org.scalatest"               %% "scalatest"   % "2.1.3" % "test"
+  "net.sourceforge.jtransforms" %  "jtransforms"    % "2.4.0",
+  "de.sciss"                    %% "serial"         % "1.0.2",
+  "org.scalatest"               %% "scalatest"      % "2.1.3" % "test",
+  "de.sciss"                    %% "scalaaudiofile" % "1.4.4" % "test"
 )
 
-// retrieveManaged := true
-
-scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature", "-Xfuture")
+scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature", "-Xfuture", "-encoding", "utf8")
 
 initialCommands in console := """
   |import de.sciss.dsp._
@@ -46,7 +45,7 @@ buildInfoPackage := "de.sciss.dsp"
 publishMavenStyle := true
 
 publishTo :=
-  Some(if (version.value endsWith "-SNAPSHOT")
+  Some(if (isSnapshot.value)
     "Sonatype Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
   else
     "Sonatype Releases"  at "https://oss.sonatype.org/service/local/staging/deploy/maven2"
