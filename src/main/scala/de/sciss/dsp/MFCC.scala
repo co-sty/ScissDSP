@@ -107,7 +107,7 @@ object MFCC {
   }
 
   private final class ConfigBuilderImpl extends ConfigBuilder {
-    override def toString = s"ConstQ.ConfigBuilder@${hashCode.toHexString}"
+    override def toString = s"MFCC.ConfigBuilder@${hashCode.toHexString}"
 
     // rather moderate defaults with 55 Hz, 8ms spacing, 4096 FFT...
     var sampleRate      = 44100.0
@@ -128,7 +128,7 @@ object MFCC {
                                       numFilters: Int, fftSize: Int, preEmphasis: Boolean, threading: Threading)
     extends Config {
 
-    override def toString = s"ConstQ.Config@${hashCode.toHexString}"
+    override def toString = s"MFCC.Config@${hashCode.toHexString}"
   }
 
   private def melToFreq(mel : Double): Double =  700 * (math.pow(10, mel / 2595) - 1)
