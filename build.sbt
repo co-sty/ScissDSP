@@ -17,7 +17,7 @@ crossScalaVersions := Seq("2.11.6", "2.10.5")
 libraryDependencies ++= Seq(
   "net.sourceforge.jtransforms" %  "jtransforms"    % "2.4.0",
   "de.sciss"                    %% "serial"         % "1.0.2",
-  "org.scalatest"               %% "scalatest"      % "2.1.3" % "test",
+  "org.scalatest"               %% "scalatest"      % "2.2.4" % "test",
   "de.sciss"                    %% "scalaaudiofile" % "1.4.4" % "test"
 )
 
