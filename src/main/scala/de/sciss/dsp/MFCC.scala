@@ -174,10 +174,10 @@ object MFCC {
       * @param in the input samples to process
       * @return the feature vector with `config.numCoeff` elements.
       */
-    def process(in: Array[Float]): Array[Double] = {
-      val frame = if (preEmphasis) applyPreEmphasis(in) else in
+    def process(in: Array[Float], off: Int, len: Int): Array[Double] = {
+      val frame = if (preEmphasis) applyPreEmphasis(in, off, len) else in
 
-      val bin   = magnitudeSpectrum(frame)
+      val bin   = magnitudeSpectrum(frame, if (preEmphasis) 0 else off, len)
       val fBank = melFilter(bin)
       val f     = nonLinearTransformation(fBank)
 
@@ -200,10 +200,9 @@ object MFCC {
       c
     }
 
-    private def magnitudeSpectrum(frame: Array[Float]): Array[Float] = {
-      val sz = frame.length
-      System.arraycopy(frame, 0, fftBuf, 0, sz)
-      var i = frame.length
+    private def magnitudeSpectrum(frame: Array[Float], off: Int, len: Int): Array[Float] = {
+      System.arraycopy(frame, off, fftBuf, 0, len)
+      var i = len
       while (i < fftSize) {
         fftBuf(i) = 0f
         i += 1
@@ -226,16 +225,15 @@ object MFCC {
     /*
      * Emphasizes high freq signal
      */
-    private def applyPreEmphasis(in: Array[Float]): Array[Float] = {
-      val sz = in.length
-      val out = new Array[Float](sz)
-      if (sz == 0) return out
+    private def applyPreEmphasis(in: Array[Float], off: Int, len: Int): Array[Float] = {
+      val out = new Array[Float](len)
+      if (len == 0) return out
 
       // apply pre-emphasis to each sample
       var n = 1
-      var x1 = in(0)
-      while (n < sz) {
-        val x0 = in(n)
+      var x1 = in(off)
+      while (n < len) {
+        val x0 = in(off + n)
         out(n) = (x0 - preEmphasisAlpha * x1).toFloat
         x1 = x0
         n += 1
@@ -320,5 +318,15 @@ object MFCC {
   }
 }
 trait MFCC {
-  def process(in: Array[Float]): Array[Double]
+  /** Calculate the coefficients for a given frame of an input signal.
+    *
+    * @param in   the frame to process
+    * @param off  the offset into the `in` signal. Typically zero.
+    * @param len  the number of sample frames in the `in` signal.
+    *             Typically the same as `config.fftSize`.
+    *             Must not be greater than the fft size.
+    */
+  def process(in: Array[Float], off: Int, len: Int): Array[Double]
+
+  def config: MFCC.Config
 }

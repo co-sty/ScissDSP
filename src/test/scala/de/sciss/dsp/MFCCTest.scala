@@ -12,7 +12,7 @@ object MFCCTest extends App {
   val buf       = af.buffer(1024)
   af.read(buf)
   af.close()
-  val res       = t.process(buf(0))
+  val res       = t.process(buf(0), 0, 1024)
   println(res.mkString("[", ", ", "]"))
 
 
