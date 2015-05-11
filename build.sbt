@@ -1,6 +1,6 @@
 name               := "ScissDSP"
 
-version            := "1.2.2-SNAPSHOT"
+version            := "1.2.2"
 
 organization       := "de.sciss"
 
