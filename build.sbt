@@ -1,6 +1,6 @@
 name               := "ScissDSP"
 
-version            := "1.2.2"
+version            := "1.2.3-SNAPSHOT"
 
 organization       := "de.sciss"
 
@@ -10,15 +10,15 @@ homepage           := Some(url("https://github.com/Sciss/" + name.value))
 
 licenses           := Seq("LGPL v2.1+" -> url("http://www.gnu.org/licenses/lgpl-2.1.txt"))
 
-scalaVersion       := "2.11.6"
+scalaVersion       := "2.11.7"
 
-crossScalaVersions := Seq("2.11.6", "2.10.5")
+crossScalaVersions := Seq("2.11.7", "2.10.6")
 
 libraryDependencies ++= Seq(
   "net.sourceforge.jtransforms" %  "jtransforms"    % "2.4.0",
   "de.sciss"                    %% "serial"         % "1.0.2",
-  "org.scalatest"               %% "scalatest"      % "2.2.4" % "test",
-  "de.sciss"                    %% "scalaaudiofile" % "1.4.4" % "test"
+  "org.scalatest"               %% "scalatest"      % "2.2.5" % "test",
+  "de.sciss"                    %% "scalaaudiofile" % "1.4.5" % "test"
 )
 
 scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature", "-Xfuture", "-encoding", "utf8")
@@ -28,10 +28,6 @@ initialCommands in console := """
   |def randomSignal( size: Int = 128 ) = Array.fill( size )( util.Random.nextFloat() * 2 - 1 )""".stripMargin
 
 // ---- build info ----
-
-buildInfoSettings
-
-sourceGenerators in Compile <+= buildInfo
 
 buildInfoKeys := Seq(name, organization, version, scalaVersion, description,
   BuildInfoKey.map(homepage) { case (k, opt)           => k -> opt.get },
@@ -70,11 +66,11 @@ pomExtra := { val n = name.value
 }
 
 // ---- ls.implicit.ly ----
-
-seq(lsSettings :_*)
-
-(LsKeys.tags   in LsKeys.lsync) := Seq("audio", "spectrum", "dsp", "signal")
-
-(LsKeys.ghUser in LsKeys.lsync) := Some("Sciss")
-
-(LsKeys.ghRepo in LsKeys.lsync) := Some(name.value)
+// 
+// seq(lsSettings :_*)
+// 
+// (LsKeys.tags   in LsKeys.lsync) := Seq("audio", "spectrum", "dsp", "signal")
+// 
+// (LsKeys.ghUser in LsKeys.lsync) := Some("Sciss")
+// 
+// (LsKeys.ghRepo in LsKeys.lsync) := Some(name.value)
