@@ -4,14 +4,14 @@ organization       := "de.sciss"
 description        := "Collection of DSP algorithms and components for Scala"
 homepage           := Some(url("https://github.com/Sciss/" + name.value))
 licenses           := Seq("LGPL v2.1+" -> url("http://www.gnu.org/licenses/lgpl-2.1.txt"))
-scalaVersion       := "2.11.8"
-crossScalaVersions := Seq("2.11.8", "2.10.6")
+scalaVersion       := "2.12.0-M5"
+crossScalaVersions := Seq("2.12.0-M5", "2.11.8", "2.10.6")
 
 libraryDependencies ++= Seq(
   "net.sourceforge.jtransforms" %  "jtransforms"    % "2.4.0",
-  "de.sciss"                    %% "serial"         % "1.0.2",
-  "org.scalatest"               %% "scalatest"      % "3.0.0" % "test",
-  "de.sciss"                    %% "scalaaudiofile" % "1.4.5" % "test"
+  "de.sciss"                    %% "serial"         % "1.0.3-SNAPSHOT",
+  "org.scalatest"               %% "scalatest"      % "3.0.0"          % "test",
+  "de.sciss"                    %% "scalaaudiofile" % "1.4.6-SNAPSHOT" % "test"
 )
 
 scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature", "-Xfuture", "-encoding", "utf8")
